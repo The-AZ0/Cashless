@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Validador de Consignación</title>
+    <title>Validador de Consignación - León León e Hijos</title>
     
     <style>
         * {
@@ -32,10 +32,15 @@
             margin: 15px auto;
         }
         
+        .logo {
+            max-width: 220px;
+            margin-bottom: 15px;
+        }
+        
         h1 {
             color: #1a5f8c;
             font-size: 1.6rem;
-            margin-bottom: 15px;
+            margin: 10px 0 15px 0;
         }
         
         input {
@@ -74,7 +79,6 @@
         .valido { color: #28a745; }
         .invalido { color: #dc3545; }
         
-        /* Mejorar para celulares */
         @media (max-width: 480px) {
             .container {
                 padding: 20px 15px;
@@ -89,6 +93,10 @@
 <body>
 
 <div class="container">
+    <!-- Logo de León León e Hijos -->
+    <img src="https://leonleonehijos.com/wp-content/uploads/2021/12/logo-nuevo-1.png" 
+         alt="León León e Hijos" class="logo">
+    
     <h1>🔎 Validador de Consignación</h1>
     <p>Ingrese el código del cliente:</p>
     
@@ -97,10 +105,6 @@
     <button onclick="validarCodigo()">Validar Código</button>
     
     <div id="resultado"></div>
-    
-    <hr style="margin: 25px 0;">
-    <small>Códigos válidos de ejemplo:</small>
-    <div id="listaCodigos" style="margin-top: 8px; font-size: 0.95rem; color: #555; word-break: break-all;"></div>
 </div>
 
 <script>
@@ -352,12 +356,6 @@
         14445864, 14446027, 14446038
     ];
 
-    // ==================== FUNCIONES ====================
-
-    function mostrarLista() {
-        document.getElementById("listaCodigos").innerHTML = codigosValidos.join(" • ");
-    }
-
     function validarCodigo() {
         const input = document.getElementById("codigo");
         const resultado = document.getElementById("resultado");
@@ -384,9 +382,6 @@
             validarCodigo();
         }
     });
-
-    // Mostrar lista de códigos al cargar la página
-    window.onload = mostrarLista;
 </script>
 
 </body>
