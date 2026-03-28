@@ -1,0 +1,135 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Validador de Consignación</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 95%;
+            max-width: 420px;
+            text-align: center;
+            margin: 15px auto;
+        }
+        h1 {
+            color: #1a5f8c;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #1a5f8c;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            background: #1a5f8c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:active {
+            background: #134a6e;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            min-height: 60px;
+            padding: 10px;
+        }
+        .valido { color: #28a745; }
+        .invalido { color: #dc3545; }
+        
+        /* Mejorar para celulares */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+                margin: 10px;
+            }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔎 Validador de Consignación</h1>
+    <p>Ingrese el código del cliente:</p>
+    
+    <input type="number" id="codigo" placeholder="Ej: 12345" autocomplete="off" inputmode="numeric">
+    
+    <button onclick="validarCodigo()">Validar Código</button>
+    
+    <div id="resultado"></div>
+    
+    <hr style="margin: 25px 0;">
+    <small>Códigos válidos de ejemplo:</small>
+    <div id="listaCodigos" style="margin-top:8px; font-size:0.95rem; color:#555; word-break: break-all;"></div>
+</div>
+
+<script>
+    let codigosValidos = [12345, 67890, 11111, 22222, 33333, 44444, 55555, 98765];
+
+    function mostrarLista() {
+        document.getElementById("listaCodigos").innerHTML = codigosValidos.join(" • ");
+    }
+
+    function validarCodigo() {
+        const input = document.getElementById("codigo");
+        const resultado = document.getElementById("resultado");
+        const codigo = parseInt(input.value.trim());
+
+        if (!codigo || isNaN(codigo)) {
+            resultado.innerHTML = "⚠️ Ingresa un número válido";
+            resultado.className = "";
+            return;
+        }
+
+        if (codigosValidos.includes(codigo)) {
+            resultado.innerHTML = `✅ El código <strong>${codigo}</strong> <br>SÍ es cliente de consignación`;
+            resultado.className = "valido";
+        } else {
+            resultado.innerHTML = `❌ El código <strong>${codigo}</strong> <br>NO es cliente de consignación`;
+            resultado.className = "invalido";
+        }
+
+        // Opcional: limpiar el campo después de validar
+        // input.value = "";
+    }
+
+    // Presionar Enter
+    document.getElementById("codigo").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") validarCodigo();
+    });
+
+    window.onload = mostrarLista;
+</script>
+
+</body>
+</html>
