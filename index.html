@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validador de Consignación</title>
 
+    <!-- Fuente moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,14 +23,20 @@
 
     <!-- HEADER -->
     <div class="header">
-        <img src="img/logo.png" class="logo">
-        <h1>🔎 Validador de Consignación</h1>
+        <img src="img/logo.png" class="logo" alt="Logo">
+        <h2>🔎 Validador de Consignación</h2>
+        <p class="subtitulo">Verifica si un cliente está en consignación</p>
     </div>
 
     <!-- FORM -->
     <div class="form">
-        <p>Ingrese el código del cliente:</p>
-        <input type="number" id="codigo" placeholder="Ej: 12345">
+        <label for="codigo">Código del cliente</label>
+
+        <div class="input-group">
+            <span class="icono">🔢</span>
+            <input type="number" id="codigo" placeholder="Ej: 12706514">
+        </div>
+
         <button id="btnValidar">Validar Código</button>
     </div>
 
@@ -35,7 +45,8 @@
 
     <!-- FOOTER -->
     <div class="footer">
-        Total de clientes: <strong>2011</strong>
+        <p>Total de clientes de consignación</p>
+        <strong id="totalClientes">2011</strong>
     </div>
 
 </div>
