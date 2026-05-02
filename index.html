@@ -2,198 +2,45 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Validador de Consignación - León León e Hijos</title>
-    
-    <style>
-        * { 
-            box-sizing: border-box; 
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        
-        .container {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            width: 95%;
-            max-width: 420px;
-            text-align: center;
-            margin: 15px;
-        }
-        
-        .logo {
-            max-width: 220px;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            color: #1a5f8c;
-            font-size: 1.65rem;
-            margin: 10px 0 18px 0;
-        }
-        
-        p {
-            color: #555;
-            margin-bottom: 20px;
-            font-size: 1.05rem;
-        }
-        
-        input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.25rem;
-            border: 2px solid #1a5f8c;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #134a6e;
-            box-shadow: 0 0 0 3px rgba(26, 95, 140, 0.25);
-        }
-        
-        button {
-            width: 100%;
-            padding: 16px;
-            font-size: 1.15rem;
-            background: #1a5f8c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        button:hover { 
-            background: #134a6e; 
-        }
-        
-        button:active { 
-            transform: scale(0.98); 
-        }
-        
-        #resultado {
-            margin-top: 25px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            min-height: 75px;
-            padding: 15px;
-            border-radius: 8px;
-            line-height: 1.4;
-        }
-        
-        .valido { 
-            color: #28a745; 
-            background: #e8f5e9; 
-        }
-        
-        .invalido { 
-            color: #dc3545; 
-            background: #f8d7da; 
-        }
-        
-        .total {
-            margin-top: 15px;
-            font-size: 1.05rem;
-            color: #444;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador de Consignación</title>
 
-        .info {
-            font-size: 0.95rem;
-            color: #777;
-            margin-top: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="container">
-    <h1>🔎 Validador de Consignación</h1>
-    <p>Ingrese el código del cliente (máximo 8 dígitos):</p>
-    
-    <input type="text" 
-           id="codigo" 
-           placeholder="Ej: 12345678" 
-           maxlength="8"
-           autocomplete="off"
-           inputmode="numeric"
-           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8)">
-    
-    <button onclick="validarCodigo()">Validar Código</button>
-    
-    <div id="resultado"></div>
-    <div class="total">Total de clientes de consignación: <strong>2011</strong></div>
-    <div class="info">Solo se permiten números de hasta 8 dígitos</div>
+<!-- PRELOADER -->
+<div id="preloader">
+    <img src="img/loading.gif" alt="Cargando">
+    <p>Cargando sistema...</p>
 </div>
 
-<script>
-    // Convertir la lista a Set para búsqueda ultra rápida
-    const codigosValidos = new Set([
-        10419071, 10419073, 10419115, /* ... resto de tus códigos ... */ 
-        // (mantengo tu lista completa aquí)
-        14299144
-    ]);
+<div class="container">
 
-    function validarCodigo() {
-        const input = document.getElementById("codigo");
-        const resultado = document.getElementById("resultado");
-        
-        let codigo = input.value.trim();
+    <!-- HEADER -->
+    <div class="header">
+        <img src="img/logo.png" class="logo">
+        <h1>🔎 Validador de Consignación</h1>
+    </div>
 
-        // Validaciones
-        if (!codigo) {
-            resultado.innerHTML = "⚠️ Por favor, ingresa un código";
-            resultado.className = "";
-            return;
-        }
+    <!-- FORM -->
+    <div class="form">
+        <p>Ingrese el código del cliente:</p>
+        <input type="number" id="codigo" placeholder="Ej: 12345">
+        <button id="btnValidar">Validar Código</button>
+    </div>
 
-        if (codigo.length > 8) {
-            resultado.innerHTML = "⚠️ El código no puede tener más de 8 dígitos";
-            resultado.className = "invalido";
-            return;
-        }
+    <!-- RESULTADO -->
+    <div id="resultado"></div>
 
-        const codigoNum = parseInt(codigo, 10);
+    <!-- FOOTER -->
+    <div class="footer">
+        Total de clientes: <strong>2011</strong>
+    </div>
 
-        if (codigosValidos.has(codigoNum)) {
-            resultado.innerHTML = `✅ El código <strong>${codigo}</strong><br>SÍ es cliente de consignación`;
-            resultado.className = "valido";
-        } else {
-            resultado.innerHTML = `❌ El código <strong>${codigo}</strong><br>NO es cliente de consignación`;
-            resultado.className = "invalido";
-        }
-    }
+</div>
 
-    // Validar con tecla Enter
-    document.getElementById("codigo").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-            validarCodigo();
-        }
-    });
-
-    // Opcional: limpiar resultado al escribir nuevo código
-    document.getElementById("codigo").addEventListener("input", () => {
-        const resultado = document.getElementById("resultado");
-        if (resultado.className) {
-            resultado.innerHTML = "";
-            resultado.className = "";
-        }
-    });
-</script>
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
