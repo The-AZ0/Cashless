@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validador de Consignación</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #ede4d8;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  padding: 20px;
+}
+
+/* PRELOADER */
+#preloader {
+  position: fixed;
+  inset: 0;
+  background: #f5ede0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  z-index: 999;
+  transition: opacity 0.6s ease;
+}
+#preloader.hide { opacity: 0; pointer-events: none; }
+
+.lion-wrap {
+  width: 210px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lion-wrap img {
+  width: 210px;
+  animation: lionBounce 0.55s ease-in-out infinite alternate;
+  filter: drop-shadow(4px 8px 18px rgba(180,40,40,0.22));
+}
+@keyframes lionBounce {
+  from { transform: translateY(0px); }
+  to   { transform: translateY(-8px); }
+}
+
+.pre-bar-wrap {
+  width: 160px; height: 4px;
+  background: rgba(180,40,40,0.15);
+  border-radius: 4px; overflow: hidden;
+}
+.pre-bar {
+  height: 100%; border-radius: 4px;
+  background: #b42828;
+  animation: fillBar 2s ease forwards;
+}
+@keyframes fillBar { from { width: 0% } to { width: 100% } }
+
+.pre-lbl {
+  font-size: 11px; font-weight: 600;
+  color: rgba(100,50,30,0.45);
+  text-transform: uppercase; letter-spacing: 2px;
+}
+
+/* CARD */
+.card {
+  background: #fdf6ee;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(120,40,20,0.12), 0 2px 8px rgba(120,40,20,0.06);
+}
+
+/* HEADER */
+.card-header {
+  background: #b42828;
+  padding: 22px 24px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.logo-box {
+  width: 52px; height: 52px;
+  background: #fdf6ee;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.logo-box img { width: 42px; height: 42px; object-fit: contain; }
+
+.header-text h1 {
+  font-size: 17px; font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 1.1;
+}
+.header-text p {
+  font-size: 11px; color: rgba(255,255,255,0.65);
+  font-weight: 500; margin-top: 3px; letter-spacing: 0.3px;
+}
+
+.header-count {
+  margin-left: auto;
+  text-align: center;
+  background: rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 8px 14px;
+  flex-shrink: 0;
+}
+.header-count .num {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px; font-weight: 700;
+  color: #fff; display: block; line-height: 1;
+}
+.header-count .lbl {
+  font-size: 9px; color: rgba(255,255,255,0.6);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px;
+}
+
+/* DECORATIVE STRIP */
+.strip {
+  height: 4px;
+  background: linear-gradient(90deg, #e8a020, #b42828, #e8a020);
+}
+
+/* BODY */
+.card-body { padding: 26px 24px 22px; }
+
+.form-label {
+  font-size: 11px; font-weight: 700;
+  color: rgba(100,50,30,0.5);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 9px;
+  display: block;
+}
+
+.input-wrap { position: relative; margin-bottom: 14px; }
+
+.input-wrap input {
+  width: 100%;
+  padding: 15px 16px 15px 46px;
+  border: 2px solid rgba(180,40,40,0.18);
+  border-radius: 14px;
+  background: #fff;
+  font-family: 'DM Mono', monospace;
+  font-size: 18px; font-weight: 500;
+  color: #2a1a0a;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  letter-spacing: 1.5px;
+  -moz-appearance: textfield;
+}
+.input-wrap input::-webkit-outer-spin-button,
+.input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.input-wrap input::placeholder { color: rgba(100,50,30,0.28); font-size: 13px; letter-spacing: 0.5px; }
+.input-wrap input:focus {
+  border-color: #b42828;
+  box-shadow: 0 0 0 3px rgba(180,40,40,0.1);
+}
+
+.input-icon {
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px; pointer-events: none; opacity: 0.35;
+}
+
+button#btnValidar {
+  width: 100%;
+  padding: 15px;
+  background: #b42828;
+  border: none; border-radius: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: #fff; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: background 0.18s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 18px rgba(180,40,40,0.28);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+button#btnValidar:hover { background: #9c2020; box-shadow: 0 6px 22px rgba(180,40,40,0.38); }
+button#btnValidar:active { transform: scale(0.98); }
+
+/* RESULTADO */
+#resultado {
+  margin-top: 16px;
+  border-radius: 14px;
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+#resultado.show { max-height: 130px; opacity: 1; padding: 16px 18px; }
+
+#resultado.valido  { background: #edfaf3; border: 2px solid #2ea866; }
+#resultado.invalido{ background: #fff0f0; border: 2px solid #e03030; }
+#resultado.warn    { background: #fffbf0; border: 2px solid #d4a017; }
+
+.res-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.res-pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.valido .res-pip  { background: #2ea866; }
+.invalido .res-pip{ background: #e03030; }
+.warn .res-pip    { background: #d4a017; }
+
+.res-tag {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  padding: 3px 9px; border-radius: 6px;
+}
+.valido .res-tag  { background: rgba(46,168,102,0.14); color: #1a7a48; }
+.invalido .res-tag{ background: rgba(224,48,48,0.12);  color: #b02020; }
+.warn .res-tag    { background: rgba(212,160,23,0.14);  color: #9a7010; }
+
+.res-msg {
+  font-size: 14px; font-weight: 600; line-height: 1.4;
+  padding-left: 16px;
+}
+.valido .res-msg  { color: #145a34; }
+.invalido .res-msg{ color: #8a1a1a; }
+.warn .res-msg    { color: #7a5810; }
+
+/* HISTORIAL */
+.hist-section { margin-top: 18px; display: none; }
+.hist-section.on { display: block; }
+.hist-title {
+  font-size: 10px; font-weight: 700;
+  color: rgba(100,50,30,0.4);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+}
+.hist-list { display: flex; flex-direction: column; gap: 5px; }
+.hist-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  background: rgba(180,40,40,0.04);
+  border: 1px solid rgba(180,40,40,0.1);
+  border-radius: 10px;
+}
+.h-code {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; color: #4a2a10; font-weight: 500; flex: 1;
+}
+.h-badge {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 3px 9px; border-radius: 6px;
+}
+.h-badge.ok { background: rgba(46,168,102,0.12); color: #1a7a48; }
+.h-badge.no { background: rgba(224,48,48,0.1);   color: #b02020; }
+
+/* FOOTER */
+.card-footer {
+  border-top: 1px solid rgba(180,40,40,0.1);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.footer-txt {
+  font-size: 10px; color: rgba(100,50,30,0.3);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.footer-lion { font-size: 14px; opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="lion-wrap">
+    <img src="img/loading.png" alt="Cargando...">
+  </div>
+  <div class="pre-bar-wrap"><div class="pre-bar"></div></div>
+  <div class="pre-lbl">Cargando sistema...</div>
+</div>
+
+<!-- CARD -->
+<div class="card">
+
+  <div class="card-header">
+    <div class="logo-box">
+      <img src="img/logo.png" alt="Logo">
+    </div>
+    <div class="header-text">
+      <h1>Validador de<br>Consignación</h1>
+      <p>Sistema de verificación interna</p>
+    </div>
+    <div class="header-count">
+      <span class="num" id="totalClientes">0</span>
+      <div class="lbl">Clientes</div>
+    </div>
+  </div>
+
+  <div class="strip"></div>
+
+  <div class="card-body">
+
+    <label class="form-label" for="codigo">Código del cliente</label>
+    <div class="input-wrap">
+      <span class="input-icon">🔢</span>
+      <input type="number" id="codigo" placeholder="Ej: 10419071" autocomplete="off">
+    </div>
+
+    <button id="btnValidar">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="7" cy="7" r="5" stroke="white" stroke-width="2"/>
+        <path d="M11 11L15 15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      Validar Código
+    </button>
+
+    <div id="resultado"></div>
+
+    <div class="hist-section" id="histSection">
+      <div class="hist-title">Consultas recientes</div>
+      <div class="hist-list" id="histList"></div>
+    </div>
+
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-lion">🦁</span>
+    <span class="footer-txt">Solo uso interno autorizado</span>
+    <span class="footer-lion">🦁</span>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  REEMPLAZA ESTOS CÓDIGOS CON TU JSON
+// ═══════════════════════════════════════
+let codigosValidos = new Set([10419071, 10419073, 10419115, 10419171]);
+
+// Si tienes codigos.json descomenta esto:
+// fetch('./codigos.json')
+//   .then(r => r.json())
+//   .then(data => {
+//     codigosValidos = new Set(data);
+//     document.getElementById('totalClientes').textContent = codigosValidos.size;
+//   });
+
+const historial = [];
+
+const elInput    = document.getElementById('codigo');
+const elBtn      = document.getElementById('btnValidar');
+const elRes      = document.getElementById('resultado');
+const elHist     = document.getElementById('histSection');
+const elHistList = document.getElementById('histList');
+const elTotal    = document.getElementById('totalClientes');
+const elPre      = document.getElementById('preloader');
+
+elTotal.textContent = codigosValidos.size;
+
+window.addEventListener('load', () => {
+  setTimeout(() => elPre.classList.add('hide'), 2200);
+});
+
+function mostrarResultado(state, tag, msg) {
+  elRes.className = '';
+  elRes.innerHTML =
+    '<div class="res-row"><div class="res-pip"></div><span class="res-tag">' + tag + '</span></div>' +
+    '<div class="res-msg">' + msg + '</div>';
+  void elRes.offsetWidth;
+  elRes.classList.add(state, 'show');
+}
+
+function validarCodigo() {
+  const txt = elInput.value.trim();
+  if (!txt) { mostrarResultado('warn', 'Atención', 'Ingresa un código de cliente'); return; }
+
+  const num = Number(txt);
+  if (isNaN(num) || !Number.isInteger(num)) {
+    mostrarResultado('warn', 'Formato inválido', 'Solo se permiten números enteros');
+    return;
+  }
+
+  if (codigosValidos.has(num)) {
+    mostrarResultado('valido', 'Cliente activo',
+      'El código <strong>' + num + '</strong> SÍ es cliente de consignación');
+  } else {
+    mostrarResultado('invalido', 'No registrado',
+      'El código <strong>' + num + '</strong> NO es cliente de consignación');
+  }
+
+  historial.unshift({ code: num, ok: codigosValidos.has(num) });
+  if (historial.length > 4) historial.pop();
+
+  elHist.classList.add('on');
+  elHistList.innerHTML = historial.map(function(h) {
+    return '<div class="hist-item">' +
+      '<span class="h-code">' + h.code + '</span>' +
+      '<span class="h-badge ' + (h.ok ? 'ok' : 'no') + '">' + (h.ok ? 'Consignación' : 'No registrado') + '</span>' +
+      '</div>';
+  }).join('');
+
+  elInput.value = '';
+  elInput.focus();
+}
+
+elBtn.addEventListener('click', validarCodigo);
+elInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); validarCodigo(); }
+});
+<\/script>
+
+</body>
+</html>
